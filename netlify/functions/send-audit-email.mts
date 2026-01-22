@@ -261,7 +261,9 @@ export default async (req: Request, context: Context) => {
   try {
     const formData: AuditFormData = await req.json();
 
-    const RESEND_API_KEY = process.env.RESEND_API_KEY || Netlify.env.get('RESEND_API_KEY');
+    // En production, utilise la variable d'environnement Netlify
+    // En local, utilise la clé de fallback pour le développement
+    const RESEND_API_KEY = process.env.RESEND_API_KEY || Netlify.env.get('RESEND_API_KEY') || 're_U8pcCdGV_4vWSdVRkpjkQrbSTvkfpzyjU';
 
     if (!RESEND_API_KEY) {
       return new Response(
