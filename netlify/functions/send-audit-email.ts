@@ -338,5 +338,6 @@ export default async (req: Request, context: Context) => {
 };
 
 export const config: Config = {
-  path: "/api/send-audit-email"
+  path: "/api/send-audit-email",
+  method: "POST"
 };
