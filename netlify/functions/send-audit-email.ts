@@ -1,4 +1,4 @@
-import type { Context, Config } from "@netlify/functions";
+import { Handler, HandlerEvent, HandlerContext } from "@netlify/functions";
 
 interface AuditFormData {
   entreprise: string;
@@ -253,29 +253,41 @@ const formatFormDataToHTML = (data: AuditFormData): string => {
   `;
 };
 
-export default async (req: Request, context: Context) => {
-  if (req.method === "OPTIONS") {
-    return new Response(null, { status: 200 });
+const handler: Handler = async (event: HandlerEvent, context: HandlerContext) => {
+  // Handle CORS preflight
+  if (event.httpMethod === "OPTIONS") {
+    return {
+      statusCode: 200,
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Headers": "Content-Type",
+        "Access-Control-Allow-Methods": "POST, OPTIONS"
+      },
+      body: ""
+    };
+  }
+
+  if (event.httpMethod !== "POST") {
+    return {
+      statusCode: 405,
+      body: JSON.stringify({ error: "Method not allowed" })
+    };
   }
 
   try {
-    const formData: AuditFormData = await req.json();
+    const formData: AuditFormData = JSON.parse(event.body || "{}");
 
-    // En production, utilise la variable d'environnement Netlify
-    // En local, utilise la clé de fallback pour le développement
-    const RESEND_API_KEY = process.env.RESEND_API_KEY || Netlify.env.get('RESEND_API_KEY') || 're_U8pcCdGV_4vWSdVRkpjkQrbSTvkfpzyjU';
+    const RESEND_API_KEY = process.env.RESEND_API_KEY || 're_U8pcCdGV_4vWSdVRkpjkQrbSTvkfpzyjU';
 
     if (!RESEND_API_KEY) {
-      return new Response(
-        JSON.stringify({
+      return {
+        statusCode: 500,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
           error: 'Configuration manquante',
           message: 'La clé API Resend n\'est pas configurée.'
-        }),
-        {
-          status: 500,
-          headers: { 'Content-Type': 'application/json' },
-        }
-      );
+        })
+      };
     }
 
     const htmlContent = formatFormDataToHTML(formData);
@@ -298,46 +310,38 @@ export default async (req: Request, context: Context) => {
       const errorData = await emailResponse.text();
       console.error('Resend API error:', errorData);
 
-      return new Response(
-        JSON.stringify({
+      return {
+        statusCode: 500,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
           error: 'Erreur lors de l\'envoi de l\'email',
           details: errorData
-        }),
-        {
-          status: 500,
-          headers: { 'Content-Type': 'application/json' },
-        }
-      );
+        })
+      };
     }
 
     const result = await emailResponse.json();
 
-    return new Response(
-      JSON.stringify({
+    return {
+      statusCode: 200,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
         success: true,
         message: 'Email envoyé avec succès',
         id: result.id
-      }),
-      {
-        headers: { 'Content-Type': 'application/json' },
-      }
-    );
+      })
+    };
   } catch (error) {
     console.error('Error:', error);
-    return new Response(
-      JSON.stringify({
+    return {
+      statusCode: 500,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
         error: 'Erreur serveur',
         message: error instanceof Error ? error.message : 'Une erreur inconnue est survenue'
-      }),
-      {
-        status: 500,
-        headers: { 'Content-Type': 'application/json' },
-      }
-    );
+      })
+    };
   }
 };
 
-export const config: Config = {
-  path: "/api/send-audit-email",
-  method: "POST"
-};
+export { handler };

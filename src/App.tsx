@@ -125,7 +125,7 @@ const AuditITForm = () => {
         emailDestinataire: 'n.nabsflix@gmail.com'
       };
 
-      const response = await fetch('/api/send-audit-email', {
+      const response = await fetch('/.netlify/functions/send-audit-email', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
