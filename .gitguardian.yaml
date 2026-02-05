@@ -1,0 +1,7 @@
+secret:
+  ignored_paths:
+  - '**/.git/**'
+  - '**/yarn.lock'
+  - '**/node_modules/**'
+  - '**/package-lock.json'
+version: 2

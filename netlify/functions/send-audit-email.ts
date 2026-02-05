@@ -36,6 +36,7 @@ interface AuditFormData {
   finContrat: string;
   satisfaction: string;
   dossierTechnique: string;
+  commentaires: string;
   emailDestinataire: string;
 }
 
@@ -247,6 +248,14 @@ const formatFormDataToHTML = (data: AuditFormData): string => {
             <span class="field-value">${data.dossierTechnique || 'Non renseigné'}</span>
           </div>
         </div>
+
+        <div class="section">
+          <h2 class="section-title">Notes et commentaires</h2>
+          <div class="field">
+            <span class="field-label">Commentaires:</span>
+            <span class="field-value" style="white-space: pre-wrap;">${data.commentaires || 'Aucun commentaire'}</span>
+          </div>
+        </div>
       </div>
     </body>
     </html>
@@ -277,7 +286,7 @@ const handler: Handler = async (event: HandlerEvent, context: HandlerContext) =>
   try {
     const formData: AuditFormData = JSON.parse(event.body || "{}");
 
-    const RESEND_API_KEY = process.env.RESEND_API_KEY || 're_U8pcCdGV_4vWSdVRkpjkQrbSTvkfpzyjU';
+    const RESEND_API_KEY = process.env.RESEND_API_KEY;
 
     if (!RESEND_API_KEY) {
       return {

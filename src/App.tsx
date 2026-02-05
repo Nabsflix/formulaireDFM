@@ -37,7 +37,8 @@ const AuditITForm = () => {
     typeInfogerance: '',
     finContrat: '',
     satisfaction: '',
-    dossierTechnique: ''
+    dossierTechnique: '',
+    commentaires: ''
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -96,7 +97,8 @@ const AuditITForm = () => {
       ['Infogérance', 'Type', formData.typeInfogerance],
       ['Infogérance', 'Fin de contrat', formData.finContrat],
       ['Infogérance', 'Note de satisfaction (1-10)', formData.satisfaction],
-      ['Infogérance', 'Dossier technique disponible', formData.dossierTechnique]
+      ['Infogérance', 'Dossier technique disponible', formData.dossierTechnique],
+      ['Notes', 'Commentaires', formData.commentaires]
     ];
 
     const csvContent = rows.map(row =>
@@ -556,6 +558,16 @@ const AuditITForm = () => {
                 </div>
               </div>
             </div>
+          </section>
+
+          <section className="mb-8">
+            <h2 className="text-xl font-semibold text-slate-700 mb-4 border-b-2 border-blue-500 pb-2">Notes et commentaires</h2>
+            <textarea
+              placeholder="Ajoutez vos notes, observations ou commentaires supplémentaires..."
+              className="border border-slate-300 rounded px-3 py-2 w-full h-32 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-y"
+              value={formData.commentaires}
+              onChange={(e) => handleChange('commentaires', e.target.value)}
+            />
           </section>
 
           <section className="mb-8 p-6 bg-slate-50 rounded-lg border-2 border-blue-200">
