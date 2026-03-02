@@ -27,3 +27,6 @@ dist-ssr
 
 # Added by ggshield
 .cache_ggshield
+
+# Package lock (platform-specific, regenerated on each environment)
+package-lock.json
