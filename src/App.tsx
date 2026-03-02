@@ -4,6 +4,9 @@ import { Download, Send } from 'lucide-react';
 const AuditITForm = () => {
   const [formData, setFormData] = useState({
     entreprise: '',
+    nomClient: '',
+    emailClient: '',
+    telephoneClient: '',
     nbCollaborateurs: '',
     nbSites: '',
     nomades: '',
@@ -64,6 +67,9 @@ const AuditITForm = () => {
     const rows = [
       ['Section', 'Question', 'Réponse'],
       ['Informations générales', 'Entreprise', formData.entreprise],
+      ['Informations générales', 'Nom du contact', formData.nomClient],
+      ['Informations générales', 'Email du contact', formData.emailClient],
+      ['Informations générales', 'Téléphone du contact', formData.telephoneClient],
       ['Informations générales', 'Nombre de collaborateurs', formData.nbCollaborateurs],
       ['Informations générales', 'Nombre de sites', formData.nbSites],
       ['Utilisateurs et postes', 'Nomades', formData.nomades],
@@ -113,8 +119,8 @@ const AuditITForm = () => {
   };
 
   const sendByEmail = async () => {
-    if (!formData.entreprise) {
-      setSubmitStatus({ type: 'error', message: 'Veuillez renseigner au moins le nom de l\'entreprise' });
+    if (!formData.nomClient || !formData.emailClient || !formData.telephoneClient) {
+      setSubmitStatus({ type: 'error', message: 'Veuillez renseigner le nom, l\'email et le téléphone du contact avant d\'envoyer le questionnaire.' });
       return;
     }
 
@@ -171,28 +177,58 @@ const AuditITForm = () => {
 
           <section className="mb-8">
             <h2 className="text-xl font-semibold text-slate-700 mb-4 border-b-2 border-blue-500 pb-2">Informations générales</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <input
-                type="text"
-                placeholder="Entreprise"
-                className="border border-slate-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                value={formData.entreprise}
-                onChange={(e) => handleChange('entreprise', e.target.value)}
-              />
-              <input
-                type="text"
-                placeholder="Nombre de collaborateurs"
-                className="border border-slate-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                value={formData.nbCollaborateurs}
-                onChange={(e) => handleChange('nbCollaborateurs', e.target.value)}
-              />
-              <input
-                type="text"
-                placeholder="Nombre de sites"
-                className="border border-slate-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                value={formData.nbSites}
-                onChange={(e) => handleChange('nbSites', e.target.value)}
-              />
+            <div className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <input
+                  type="text"
+                  placeholder="Entreprise"
+                  className="border border-slate-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  value={formData.entreprise}
+                  onChange={(e) => handleChange('entreprise', e.target.value)}
+                />
+                <input
+                  type="text"
+                  placeholder="Nombre de collaborateurs"
+                  className="border border-slate-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  value={formData.nbCollaborateurs}
+                  onChange={(e) => handleChange('nbCollaborateurs', e.target.value)}
+                />
+                <input
+                  type="text"
+                  placeholder="Nombre de sites"
+                  className="border border-slate-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  value={formData.nbSites}
+                  onChange={(e) => handleChange('nbSites', e.target.value)}
+                />
+              </div>
+              <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                <p className="text-sm font-semibold text-blue-700 mb-3">
+                  Contact client <span className="text-red-500">*</span> — champs obligatoires pour l'envoi
+                </p>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <input
+                    type="text"
+                    placeholder="Nom du contact *"
+                    className={`border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 ${!formData.nomClient ? 'border-red-300 bg-red-50' : 'border-slate-300'}`}
+                    value={formData.nomClient}
+                    onChange={(e) => handleChange('nomClient', e.target.value)}
+                  />
+                  <input
+                    type="email"
+                    placeholder="Email du contact *"
+                    className={`border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 ${!formData.emailClient ? 'border-red-300 bg-red-50' : 'border-slate-300'}`}
+                    value={formData.emailClient}
+                    onChange={(e) => handleChange('emailClient', e.target.value)}
+                  />
+                  <input
+                    type="tel"
+                    placeholder="Téléphone du contact *"
+                    className={`border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 ${!formData.telephoneClient ? 'border-red-300 bg-red-50' : 'border-slate-300'}`}
+                    value={formData.telephoneClient}
+                    onChange={(e) => handleChange('telephoneClient', e.target.value)}
+                  />
+                </div>
+              </div>
             </div>
           </section>
 
