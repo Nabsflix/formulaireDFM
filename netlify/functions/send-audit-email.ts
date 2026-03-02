@@ -2,6 +2,9 @@ import { Handler, HandlerEvent, HandlerContext } from "@netlify/functions";
 
 interface AuditFormData {
   entreprise: string;
+  nomClient: string;
+  emailClient: string;
+  telephoneClient: string;
   nbCollaborateurs: string;
   nbSites: string;
   nomades: string;
@@ -74,6 +77,18 @@ const formatFormDataToHTML = (data: AuditFormData): string => {
           <div class="field">
             <span class="field-label">Entreprise:</span>
             <span class="field-value">${data.entreprise || 'Non renseigné'}</span>
+          </div>
+          <div class="field">
+            <span class="field-label">Nom du contact:</span>
+            <span class="field-value">${data.nomClient || 'Non renseigné'}</span>
+          </div>
+          <div class="field">
+            <span class="field-label">Email du contact:</span>
+            <span class="field-value">${data.emailClient || 'Non renseigné'}</span>
+          </div>
+          <div class="field">
+            <span class="field-label">Téléphone du contact:</span>
+            <span class="field-value">${data.telephoneClient || 'Non renseigné'}</span>
           </div>
           <div class="field">
             <span class="field-label">Nombre de collaborateurs:</span>
